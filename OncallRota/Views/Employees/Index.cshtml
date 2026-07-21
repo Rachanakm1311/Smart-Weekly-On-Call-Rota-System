@@ -1,0 +1,67 @@
+@model IEnumerable<OncallRota.Models.Employee>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Employees"; }
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <h1 class="page-title"><i class="bi bi-person-badge-fill me-2 text-primary"></i>Employees</h1>
+    <div class="d-flex gap-2">
+      <form method="get" class="d-flex gap-2">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" name="search" class="form-control" placeholder="Search by name or email…" value="@ViewBag.Search" style="min-width:200px"/>
+        </div>
+        <button type="submit" class="btn btn-outline-secondary btn-sm">Search</button>
+        @if (!string.IsNullOrEmpty(ViewBag.Search as string)) {
+          <a asp-action="Index" class="btn btn-outline-danger btn-sm"><i class="bi bi-x"></i></a>
+        }
+      </form>
+      <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-person-plus me-1"></i>Add Employee</a>
+    </div>
+  </div>
+</div>
+<div class="page-body">
+  <div class="card"><div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover datatable mb-0 align-middle">
+        <thead class="table-light">
+          <tr><th style="width:44px"></th><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Region</th><th>Team</th><th>Role</th><th>Status</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody>
+          @{ int i=1; }
+          @foreach(var e in Model){
+            var pic = !string.IsNullOrEmpty(e.ProfilePicture) ? e.ProfilePicture : "/images/profiles/default-avatar.svg";
+            <tr>
+              <td>
+                <img src="@pic" class="avatar-sm" alt="@e.EmployeeName"/>
+              </td>
+              <td class="text-muted">@(i++)</td>
+              <td class="fw-semibold">@e.EmployeeName</td>
+              <td class="small text-muted">@e.Email</td>
+              <td class="small">@(e.Phone??"—")</td>
+              <td>
+                @if (!string.IsNullOrEmpty(e.Region)) {
+                  <span class="badge bg-info-subtle text-info border border-info-subtle">
+                    <i class="bi bi-geo-alt-fill me-1" style="font-size:.6rem"></i>@e.Region
+                  </span>
+                } else {
+                  <span class="text-muted small">—</span>
+                }
+              </td>
+              <td><span class="badge bg-secondary-subtle text-secondary border">@e.Team?.TeamName</span></td>
+              <td><span class="badge bg-primary-subtle text-primary border border-primary-subtle">@e.Role?.RoleName</span></td>
+              <td><span class="badge-status badge-@e.Status.ToLower()">@e.Status</span></td>
+              <td class="text-end">
+                <div class="btn-group btn-group-sm">
+                  <a asp-action="Edit" asp-route-id="@e.EmployeeId" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                  <form asp-action="Delete" asp-route-id="@e.EmployeeId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger" data-confirm="Delete this employee?"><i class="bi bi-trash"></i></button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+</div>

@@ -1,0 +1,19 @@
+@model OncallRota.Models.Team
+@{ Layout = "~/Views/Shared/_AdminLayout.cshtml"; ViewData["Title"] = "Edit Team"; }
+<div class="page-header"><h1 class="page-title"><i class="bi bi-pencil me-2 text-primary"></i>Edit Team</h1></div>
+<div class="page-body"><div class="row justify-content-center"><div class="col-lg-5">
+<div class="card"><div class="card-header fw-semibold">Team Details</div><div class="card-body">
+<form asp-action="Edit" method="post">@Html.AntiForgeryToken()
+<input asp-for="TeamId" type="hidden"/>
+<div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2"></div>
+<div class="row g-3 mt-1">
+<div class="col-sm-6"><label asp-for="TeamName" class="form-label fw-semibold">Team Name</label><input asp-for="TeamName" class="form-control"/><span asp-validation-for="TeamName" class="text-danger small"></span></div>
+<div class="col-sm-6"><label asp-for="ManagerName" class="form-label fw-semibold">Manager Name</label><input asp-for="ManagerName" class="form-control"/></div>
+<div class="col-sm-12"><label asp-for="TeamEmailId" class="form-label fw-semibold">Team Email ID</label>
+  <div class="input-group"><span class="input-group-text"><i class="bi bi-envelope"></i></span>
+  <input asp-for="TeamEmailId" class="form-control" type="email"/></div>
+  <span asp-validation-for="TeamEmailId" class="text-danger small"></span></div>
+<div class="col-sm-6"><label asp-for="Status" class="form-label fw-semibold">Status</label><select asp-for="Status" class="form-select"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+</div>
+<div class="d-flex gap-2"><button type="submit" class="btn btn-primary">Update</button><a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></div>
+</form></div></div></div></div></div>

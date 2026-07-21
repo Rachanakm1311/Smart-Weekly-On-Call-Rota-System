@@ -1,0 +1,39 @@
+@model IEnumerable<OncallRota.Models.ShiftSwapRequest>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Shift Swap Requests"; }
+<div class="page-header"><h1 class="page-title"><i class="bi bi-arrow-left-right me-2 text-primary"></i>Shift Swap Requests</h1></div>
+<div class="page-body">
+  <div class="card"><div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover datatable mb-0 align-middle">
+        <thead class="table-light">
+          <tr><th>#</th><th>Requested By</th><th>Swap With</th><th>Week</th><th>Reason</th><th>Status</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody>
+          @{ int i=1; }
+          @foreach(var s in Model){
+            <tr>
+              <td class="text-muted">@(i++)</td>
+              <td class="fw-semibold">@s.RequestedByEmployee?.EmployeeName</td>
+              <td>@s.SwapWithEmployee?.EmployeeName</td>
+              <td class="small text-muted">@s.Schedule?.WeekStartDate?.ToString("dd MMM") – @s.Schedule?.WeekEndDate?.ToString("dd MMM yyyy")</td>
+              <td class="small text-muted">@(s.Reason?.Length>30?s.Reason[..30]+"…":s.Reason??"—")</td>
+              <td><span class="badge-status badge-@s.Status.ToLower()">@s.Status</span></td>
+              <td class="text-end">
+                @if(s.Status=="Pending"){
+                  <form asp-action="Approve" asp-route-id="@s.SwapId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-xs btn-success" data-confirm="Approve this swap?"><i class="bi bi-check-lg"></i> Approve</button>
+                  </form>
+                  <form asp-action="Reject" asp-route-id="@s.SwapId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-xs btn-danger" data-confirm="Reject this swap?"><i class="bi bi-x-lg"></i> Reject</button>
+                  </form>
+                } else { <span class="text-muted small">@(s.ApprovedBy ?? s.Status)</span> }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+</div>

@@ -1,0 +1,83 @@
+@model OncallRota.Models.LeaveRequest
+@{ Layout="_EmployeeLayout"; ViewData["Title"]="Apply Leave"; }
+<div class="page-header"><h1 class="page-title"><i class="bi bi-calendar-plus me-2 text-primary"></i>Apply for Leave</h1></div>
+<div class="page-body"><div class="row justify-content-center"><div class="col-lg-6">
+  <div class="card"><div class="card-header fw-semibold">Leave Details</div><div class="card-body">
+    <form asp-action="Apply" method="post">@Html.AntiForgeryToken()
+      <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2"></div>
+
+      <div class="mb-3"><label asp-for="LeaveType" class="form-label"></label>
+        <select asp-for="LeaveType" class="form-select" id="leaveTypeSelect" onchange="onLeaveTypeChange()">
+          <option>Annual</option>
+          <option>Sick</option>
+          <option>Parental</option>
+          <option>Unpaid</option>
+          <option value="Holiday Work">Holiday Work (Comp-Off)</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-sm-6"><label asp-for="StartDate" class="form-label"></label>
+          <input asp-for="StartDate" type="date" class="form-control"/></div>
+        <div class="col-sm-6"><label asp-for="EndDate" class="form-label"></label>
+          <input asp-for="EndDate" type="date" class="form-control"/></div>
+      </div>
+
+      <!-- Holiday Work section — shown only when "Holiday Work (Comp-Off)" is selected -->
+      <div id="holidayWorkSection" class="mb-3 p-3 rounded border border-warning-subtle bg-warning-subtle" style="display:none">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="bi bi-brightness-high-fill text-warning"></i>
+          <span class="fw-semibold small">Working on a Regional Holiday</span>
+        </div>
+        <p class="text-muted small mb-3">
+          You are opting to work on your regional holiday. The rota generator will include you for on-call that week.
+          Please select the comp-off date you will take in lieu.
+        </p>
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" asp-for="WorkOnHoliday" id="workOnHolidayChk" onchange="onWorkOnHolidayChange()"/>
+          <label class="form-check-label fw-semibold" for="workOnHolidayChk">
+            Yes, I confirm I will work on this holiday
+          </label>
+        </div>
+        <div id="compOffSection" style="display:none">
+          <label asp-for="CompOffDate" class="form-label fw-semibold">Comp-Off Date <span class="text-muted fw-normal">(the day you will take off instead)</span></label>
+          <input asp-for="CompOffDate" type="date" class="form-control" style="max-width:220px"/>
+          <span asp-validation-for="CompOffDate" class="text-danger small"></span>
+        </div>
+      </div>
+
+      <div class="mb-3"><label asp-for="Reason" class="form-label"></label>
+        <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Reason for leave…"></textarea></div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Submit Request</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div></div>
+</div></div></div>
+
+@section Scripts {
+<script>
+function onLeaveTypeChange() {
+  var sel = document.getElementById('leaveTypeSelect').value;
+  var sec = document.getElementById('holidayWorkSection');
+  if (sel === 'Holiday Work') {
+    sec.style.display = 'block';
+  } else {
+    sec.style.display = 'none';
+    document.getElementById('workOnHolidayChk').checked = false;
+    document.getElementById('compOffSection').style.display = 'none';
+  }
+}
+function onWorkOnHolidayChange() {
+  var chk = document.getElementById('workOnHolidayChk').checked;
+  document.getElementById('compOffSection').style.display = chk ? 'block' : 'none';
+}
+// Restore state on page load (e.g. validation re-render)
+document.addEventListener('DOMContentLoaded', function () {
+  onLeaveTypeChange();
+  onWorkOnHolidayChange();
+});
+</script>
+}

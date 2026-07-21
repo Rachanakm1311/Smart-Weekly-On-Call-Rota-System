@@ -1,0 +1,41 @@
+﻿@model IEnumerable<OncallRota.Models.Role>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Roles"; }
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between">
+    <div><h1 class="page-title"><i class="bi bi-shield-half me-2 text-primary"></i>Roles</h1></div>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Role</a>
+  </div>
+</div>
+<div class="page-body">
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover datatable mb-0 align-middle">
+          <thead class="table-light">
+            <tr><th>#</th><th>Role Name</th><th>Description</th><th>Status</th><th class="text-end">Actions</th></tr>
+          </thead>
+          <tbody>
+            @{ int i=1; }
+            @foreach(var r in Model){
+              <tr>
+                <td class="text-muted">@(i++)</td>
+                <td class="fw-semibold">@r.RoleName</td>
+                <td class="text-muted small">@(r.Description??"—")</td>
+                <td><span class="badge-status badge-@r.Status.ToLower()">@r.Status</span></td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <a asp-action="Edit" asp-route-id="@r.RoleId" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                    <form asp-action="Delete" asp-route-id="@r.RoleId" method="post" class="d-inline">
+                      @Html.AntiForgeryToken()
+                      <button type="submit" class="btn btn-outline-danger" data-confirm="Delete this role?"><i class="bi bi-trash"></i></button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

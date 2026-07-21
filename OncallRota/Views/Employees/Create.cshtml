@@ -1,0 +1,119 @@
+@model OncallRota.Models.Employee
+@{ Layout = "~/Views/Shared/_AdminLayout.cshtml"; ViewData["Title"] = "Add Employee"; }
+
+<div class="page-header">
+  <h1 class="page-title"><i class="bi bi-person-plus me-2 text-primary"></i>Add Employee</h1>
+</div>
+
+<div class="page-body">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header fw-semibold">Employee Details</div>
+        <div class="card-body">
+          <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2"></div>
+
+            <!-- Profile picture uploader -->
+            <div class="d-flex align-items-center gap-4 mb-4 pb-3 border-bottom">
+              <div class="position-relative">
+                <img id="photoPreview" src="/images/profiles/default-avatar.svg"
+                     class="avatar-lg" alt="Profile picture"/>
+              </div>
+              <div>
+                <label class="form-label fw-semibold mb-1">Profile Photo</label>
+                <input type="file" name="photo" id="photoInput" accept="image/*"
+                       class="form-control form-control-sm" style="max-width:260px"
+                       onchange="previewPhoto(this)"/>
+                <div class="form-text text-muted">JPG, PNG, GIF or WebP · Max 5 MB</div>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label asp-for="FirstName" class="form-label">First Name</label>
+                <input asp-for="FirstName" class="form-control"/>
+                <span asp-validation-for="FirstName" class="text-danger small"></span>
+              </div>
+              <div class="col-sm-6">
+                <label asp-for="LastName" class="form-label">Last Name</label>
+                <input asp-for="LastName" class="form-control"/>
+                <span asp-validation-for="LastName" class="text-danger small"></span>
+              </div>
+              <div class="col-sm-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control"/>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+              </div>
+              <div class="col-sm-6">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control"/>
+              </div>
+              <div class="col-sm-6">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control"/>
+              </div>
+              <div class="col-sm-6">
+                 <label asp-for="Region" class="form-label">Region (IBM India Office)</label>
+                 <select asp-for="Region" class="form-select">
+                   <option value="">-- Select --</option>
+                   <option value="Bangalore">Bangalore</option>
+                   <option value="Hyderabad">Hyderabad</option>
+                   <option value="Pune">Pune</option>
+                   <option value="Chennai">Chennai</option>
+                   <option value="Kolkata">Kolkata</option>
+                   <option value="Delhi">Delhi</option>
+                   <option value="Mumbai">Mumbai</option>
+                   <option value="Noida">Noida</option>
+                   <option value="Gurgaon">Gurgaon</option>
+                   <option value="Ahmedabad">Ahmedabad</option>
+                   <option value="Bhubaneswar">Bhubaneswar</option>
+                   <option value="Coimbatore">Coimbatore</option>
+                 </select>
+               </div>
+              <div class="col-sm-6">
+                 <label asp-for="TeamId" class="form-label">Team</label>
+                 <select asp-for="TeamId" asp-items="ViewBag.Teams" class="form-select">
+                   <option value="">-- Select --</option>
+                 </select>
+               </div>
+              <div class="col-sm-6">
+                <label asp-for="RoleId" class="form-label">Role</label>
+                <select asp-for="RoleId" asp-items="ViewBag.Roles" class="form-select">
+                  <option value="">-- Select --</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select">
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-1"></i>Save Employee
+              </button>
+              <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+function previewPhoto(input){
+  if(input.files && input.files[0]){
+    var reader = new FileReader();
+    reader.onload = function(e){ document.getElementById('photoPreview').src = e.target.result; };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+}

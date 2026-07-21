@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>@ViewData["Title"] – Smart On-Call Rota</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css"/>
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+<body>
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar__brand">
+    <div class="sidebar__brand-icon"><i class="bi bi-calendar2-week-fill"></i></div>
+    <span class="sidebar__brand-text">On-Call Rota</span>
+  </div>
+  <div class="sidebar__nav">
+    <div class="sidebar__section">My Space</div>
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Employee"&&ViewContext.RouteData.Values["action"]?.ToString()=="Index"?"active":"")"
+         asp-controller="Employee" asp-action="Index">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span></a></div>
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["action"]?.ToString()=="MySchedule"?"active":"")"
+         asp-controller="Employee" asp-action="MySchedule">
+        <i class="bi bi-calendar3-week"></i><span>My Schedule</span></a></div>
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["action"]?.ToString()=="FullSchedule"?"active":"")"
+         asp-controller="Employee" asp-action="FullSchedule">
+        <i class="bi bi-people-fill"></i><span>Who Is On-Call</span></a></div>
+    <div class="sidebar__section">Requests</div>
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["controller"]?.ToString()=="LeaveRequests"?"active":"")"
+         asp-controller="LeaveRequests" asp-action="Index">
+        <i class="bi bi-calendar-minus"></i><span>Leave Requests</span></a></div>
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["controller"]?.ToString()=="ShiftSwap"?"active":"")"
+         asp-controller="ShiftSwap" asp-action="Index">
+        <i class="bi bi-arrow-left-right"></i><span>Shift Swap</span></a></div>
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["controller"]?.ToString()=="HolidayCalendar"?"active":"")"
+         asp-controller="HolidayCalendar" asp-action="Index">
+        <i class="bi bi-calendar-heart"></i><span>Holiday Calendar</span></a></div>
+    @{
+      int _unread = 0;
+      try {
+        var _nc2 = Context.RequestServices.GetService<OncallRota.Data.ApplicationDbContext>();
+        if (_nc2 != null) {
+          var _eid = Context.Session.GetInt32("EmployeeId");
+          _unread = _nc2.Notifications.Count(n => n.EmployeeId == _eid && n.Status == "Unread");
+        }
+      } catch { }
+    }
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["controller"]?.ToString()=="Notifications"?"active":"")"
+         asp-controller="Notifications" asp-action="Index">
+        <i class="bi bi-bell-fill"></i><span>Notifications @if(_unread > 0){<span class="badge bg-danger rounded-pill ms-1" style="font-size:.6rem">@_unread</span>}</span></a></div>
+    <div class="sidebar__item">
+      <a class="sidebar__link @(ViewContext.RouteData.Values["action"]?.ToString()=="Profile"?"active":"")"
+         asp-controller="Employee" asp-action="Profile">
+        <i class="bi bi-person-circle"></i><span>My Profile</span></a></div>
+    <div class="sidebar__section">Tools</div>
+    <div class="sidebar__item">
+      <a class="sidebar__link" href="javascript:void(0)" onclick="icaOpen()">
+        <i class="bi bi-robot"></i><span>COTS Smart Fix</span></a></div>
+    <div class="sidebar__section">Account</div>
+    <div class="sidebar__item">
+      <a class="sidebar__link text-danger" asp-controller="Auth" asp-action="Logout">
+        <i class="bi bi-box-arrow-right"></i><span>Logout</span></a></div>
+  </div>
+  <div class="sidebar__footer">
+    <small class="sidebar__link" style="pointer-events:none;color:#6b7a96">
+      <i class="bi bi-person-circle"></i><span>Employee Portal</span></small>
+  </div>
+</nav>
+<!-- TOPBAR -->
+<header class="topbar" id="topbar">
+  <div class="topbar__left">
+    <button class="topbar__toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
+    <span class="topbar__brand d-none d-lg-inline">Smart On-Call Rota</span>
+    <div class="topbar__divider d-none d-lg-block"></div>
+    <span class="topbar__page-title d-none d-lg-inline">@(ViewData["Title"]?.ToString() ?? "")</span>
+  </div>
+  <div class="topbar__right">
+    <span class="topbar__clock d-none d-md-inline" id="topClock"></span>
+    <div class="topbar__user">
+      @{
+        var _en  = Context.Session.GetString("EmployeeName") ?? "";
+        var _ep  = Context.Session.GetString("ProfilePicture") ?? "";
+        var _ei  = string.IsNullOrEmpty(_en) ? "E" :
+                   (_en.Contains(' ')
+                     ? (_en[..1] + _en[(_en.IndexOf(' ')+1)..(_en.IndexOf(' ')+2)]).ToUpper()
+                     : _en[..1].ToUpper());
+      }
+      @if (!string.IsNullOrEmpty(_ep)) {
+        <img src="@_ep" class="topbar__avatar-img" alt="@_en"/>
+      } else {
+        <div class="topbar__avatar">@_ei</div>
+      }
+      <div class="d-none d-md-block">
+        <div class="topbar__name">@_en</div>
+        <div class="topbar__role">@Context.Session.GetString("TeamName")</div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- MAIN -->
+<!-- ICA Floating Button -->
+<button class="ica-fab" onclick="icaOpen()" title="Open COTS Smart Fix">
+  <i class="bi bi-robot"></i>
+</button>
+<span class="ica-fab-label">COTS Smart Fix</span>
+
+<!-- ICA Backdrop -->
+<div class="ica-backdrop" id="icaBackdrop" onclick="icaClose()"></div>
+
+<!-- ICA Drawer -->
+<div class="ica-drawer" id="icaDrawer">
+  <div class="ica-drawer__header">
+    <div>
+      <div class="ica-drawer__header-title"><i class="bi bi-robot me-2"></i>COTS Smart Fix</div>
+      <div class="ica-drawer__header-sub" id="icaDrawerSub">AI-powered P1 / P2 incident resolution assistant</div>
+    </div>
+    <button class="ica-drawer__close" onclick="icaClose()"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="ica-drawer__body">
+
+    <div class="ica-info-card">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="ica-info-card__icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <div>
+          <div class="fw-semibold" style="font-size:.9rem">What is COTS Smart Fix?</div>
+          <div class="text-muted small">Intelligent Curation Assistant — IBM</div>
+        </div>
+      </div>
+      <p class="text-muted small mb-0">
+        COTS Smart Fix is IBM's AI-powered incident resolution tool. When a <strong>P1 or P2</strong> alert fires,
+        use COTS Smart Fix to quickly identify the root cause, find past resolutions, and get step-by-step
+        remediation guidance — reducing MTTR significantly.
+      </p>
+    </div>
+
+    <div class="fw-semibold small mb-2" style="color:#1e293b">How to use during a P1/P2</div>
+    <ul class="ica-steps mb-4">
+      <li>
+        <span class="ica-steps__num">1</span>
+        <span>Click <strong>Open ICA Tool</strong> below to launch the chat in a new tab.</span>
+      </li>
+      <li>
+        <span class="ica-steps__num">2</span>
+        <span>Paste the <strong>error message</strong> or application logs into the chat.</span>
+      </li>
+      <li>
+        <span class="ica-steps__num">3</span>
+        <span>ICA will suggest <strong>resolution steps</strong> based on past incidents and runbooks.</span>
+      </li>
+      <li>
+        <span class="ica-steps__num">4</span>
+        <span>Follow the steps and <strong>document your findings</strong> for the incident record.</span>
+      </li>
+      <li>
+        <span class="ica-steps__num">5</span>
+        <span>If unresolved, escalate to the <strong>Backup on-call</strong> engineer.</span>
+      </li>
+    </ul>
+
+    <a id="icaOpenBtn" href="#" target="_blank" rel="noopener" class="ica-open-btn mb-3">
+      <i class="bi bi-box-arrow-up-right"></i><span id="icaOpenBtnText">Open COTS Smart Fix</span>
+    </a>
+
+    <div class="text-center text-muted" style="font-size:.7rem">
+      Opens in a new tab &nbsp;·&nbsp; IBM internal tool &nbsp;·&nbsp; SSO required
+    </div>
+
+  </div>
+</div>
+
+<script>
+var ICA_URL = 'https://canada.ica.ibm.com/ica/curatorai/apps/ui/new-chat/6a5e05efb3a8890216f03ea5';
+
+function icaOpen(){
+  document.getElementById('icaOpenBtn').href = ICA_URL;
+  document.getElementById('icaDrawer').classList.add('open');
+  document.getElementById('icaBackdrop').classList.add('open');
+}
+function icaClose(){
+  document.getElementById('icaDrawer').classList.remove('open');
+  document.getElementById('icaBackdrop').classList.remove('open');
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') icaClose(); });
+</script>
+
+<div class="main-wrapper" id="mainWrapper">
+  @if(TempData["Success"] != null){
+  <div class="alert alert-success alert-dismissible alert-auto fade show m-3" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>}
+  @if(TempData["Error"] != null){
+  <div class="alert alert-danger alert-dismissible alert-auto fade show m-3" role="alert">
+    <i class="bi bi-x-circle-fill me-2"></i>@TempData["Error"]
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>}
+  @RenderBody()
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body></html>

@@ -1,0 +1,13 @@
+﻿@model OncallRota.Models.Role
+@{ Layout = "~/Views/Shared/_AdminLayout.cshtml"; ViewData["Title"] = "Edit Role"; }
+<div class="page-header"><h1 class="page-title"><i class="bi bi-pencil me-2 text-primary"></i>Edit Role</h1></div>
+<div class="page-body"><div class="row justify-content-center"><div class="col-lg-5">
+<div class="card"><div class="card-header fw-semibold">Role Details</div><div class="card-body">
+<form asp-action="Edit" method="post">@Html.AntiForgeryToken()
+<input asp-for="RoleId" type="hidden"/>
+<div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2"></div>
+<div class="mb-3"><label asp-for="RoleName" class="form-label"></label><input asp-for="RoleName" class="form-control"/><span asp-validation-for="RoleName" class="text-danger small"></span></div>
+<div class="mb-3"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control" rows="2"></textarea></div>
+<div class="mb-3"><label asp-for="Status" class="form-label"></label><select asp-for="Status" class="form-select"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+<div class="d-flex gap-2"><button type="submit" class="btn btn-primary">Update</button><a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></div>
+</form></div></div></div></div></div>

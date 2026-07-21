@@ -1,0 +1,107 @@
+@model IEnumerable<OncallRota.Models.Notification>
+@{
+  var isAdmin = Context.Session.GetString("RoleName") == "Admin";
+  Layout = isAdmin ? "_AdminLayout" : "_EmployeeLayout";
+  ViewData["Title"] = "Notifications";
+  var unreadList = Model.Where(n => n.Status == "Unread").ToList();
+}
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <h1 class="page-title"><i class="bi bi-bell-fill me-2 text-primary"></i>Notifications</h1>
+    <div class="d-flex gap-2 flex-wrap">
+      @if (unreadList.Any()) {
+        <button id="markAllReadBtn" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-check2-all me-1"></i>Mark All Read
+          <span class="badge bg-danger ms-1">@unreadList.Count</span>
+        </button>
+      }
+      @if (Model.Any()) {
+        <form asp-action="DeleteAll" method="post" class="d-inline">
+          @Html.AntiForgeryToken()
+          <button type="submit" class="btn btn-sm btn-outline-danger"
+                  onclick="return confirm('Delete ALL notifications? This cannot be undone.')">
+            <i class="bi bi-trash3 me-1"></i>Delete All
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</div>
+<div class="page-body">
+  <div class="card"><div class="card-body p-0">
+    @Html.AntiForgeryToken()
+    <div class="table-responsive">
+      <table class="table table-hover datatable mb-0 align-middle" id="notifTable">
+        <thead class="table-light">
+          <tr>
+            @if(isAdmin){<th>Employee</th>}
+            <th>Type</th><th>Message</th><th>Sent</th><th>Status</th><th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach(var n in Model){
+            <tr id="notif-@n.NotificationId" class="@(n.Status=="Unread"?"fw-semibold":"text-muted")">
+              @if(isAdmin){<td>@n.Employee?.EmployeeName</td>}
+              <td><span class="badge bg-primary-subtle text-primary border border-primary-subtle small">@n.NotificationType</span></td>
+              <td class="small">@n.Message</td>
+              <td class="small text-muted">@n.SentDate?.ToString("dd MMM yyyy HH:mm")</td>
+              <td><span class="badge-status badge-@(n.Status=="Unread"?"pending":"active")" id="status-@n.NotificationId">@n.Status</span></td>
+              <td class="text-end">
+                <div class="d-flex gap-1 justify-content-end">
+                  @if(n.Status=="Unread"){
+                    <button class="btn btn-xs btn-outline-primary mark-read" data-id="@n.NotificationId" title="Mark as read">
+                      <i class="bi bi-check2"></i>
+                    </button>
+                  }
+                  <form asp-action="Delete" asp-route-id="@n.NotificationId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-xs btn-outline-danger"
+                            onclick="return confirm('Delete this notification?')" title="Delete">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if(!Model.Any()){
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-bell-slash fs-2 d-block mb-2"></i>
+          No notifications yet.
+        </div>
+      }
+    </div>
+  </div></div>
+</div>
+
+@section Scripts {
+<script>
+async function markNotifRead(id, btn) {
+  const token = document.querySelector('[name=__RequestVerificationToken]')?.value || '';
+  await fetch('/Notifications/MarkRead/' + id, {method:'POST', headers:{'RequestVerificationToken': token}});
+  const row = document.getElementById('notif-' + id);
+  const stat = document.getElementById('status-' + id);
+  if (row) { row.classList.remove('fw-semibold'); row.classList.add('text-muted'); }
+  if (stat) { stat.className = 'badge-status badge-active'; stat.textContent = 'Sent'; }
+  if (btn) btn.remove();
+  // Hide "Mark All Read" button if no unread buttons remain
+  if (!document.querySelectorAll('.mark-read').length)
+    document.getElementById('markAllReadBtn')?.style && (document.getElementById('markAllReadBtn').style.display = 'none');
+}
+
+// Delegated listener — works across all DataTables pages
+document.getElementById('notifTable').addEventListener('click', function(e) {
+  const btn = e.target.closest('.mark-read');
+  if (!btn) return;
+  markNotifRead(btn.dataset.id, btn);
+});
+
+document.getElementById('markAllReadBtn')?.addEventListener('click', async function() {
+  const btns = [...document.querySelectorAll('.mark-read')];
+  for (const btn of btns) await markNotifRead(btn.dataset.id, btn);
+  this.style.display = 'none';
+});
+</script>
+}

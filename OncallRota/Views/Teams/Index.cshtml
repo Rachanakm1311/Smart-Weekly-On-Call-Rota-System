@@ -1,0 +1,46 @@
+@model IEnumerable<OncallRota.Models.Team>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Teams"; }
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 class="page-title"><i class="bi bi-people-fill me-2 text-primary"></i>Teams</h1>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Team</a>
+  </div>
+</div>
+<div class="page-body">
+  <div class="card"><div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover datatable mb-0 align-middle">
+        <thead class="table-light">
+          <tr><th>#</th><th>Team Name</th><th>Manager</th><th>Team Email</th><th>Status</th><th class="text-end">Actions</th></tr>
+       </thead>
+       <tbody>
+         @{ int i=1; }
+         @foreach(var t in Model){
+           <tr>
+             <td class="text-muted">@(i++)</td>
+             <td class="fw-semibold">@t.TeamName</td>
+             <td>@(t.ManagerName ?? "—")</td>
+             <td>
+               @if(t.TeamEmailId != null){
+                 <a href="mailto:@t.TeamEmailId" class="small text-primary">
+                   <i class="bi bi-envelope me-1"></i>@t.TeamEmailId
+                 </a>
+               } else { <span class="text-muted small">—</span> }
+             </td>
+             <td><span class="badge-status badge-@t.Status.ToLower()">@t.Status</span></td>
+              <td class="text-end">
+                <div class="btn-group btn-group-sm">
+                  <a asp-action="Edit" asp-route-id="@t.TeamId" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                  <form asp-action="Delete" asp-route-id="@t.TeamId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger" data-confirm="Delete this team?"><i class="bi bi-trash"></i></button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+</div>

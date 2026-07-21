@@ -1,0 +1,259 @@
+@model OncallRota.ViewModels.EmployeeDashboardViewModel
+@{ Layout = "_EmployeeLayout"; ViewData["Title"] = "My Dashboard"; var today = DateTime.Today; }
+
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item text-muted"><i class="bi bi-house me-1"></i>Home</li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+      <h1 class="page-title">
+        <i class="bi bi-speedometer2 me-2 text-primary"></i>My Dashboard
+      </h1>
+      <p class="page-subtitle">
+        <i class="bi bi-people me-1 text-muted"></i>@Model.CurrentEmployee.Team?.TeamName
+        &nbsp;&middot;&nbsp;
+        <i class="bi bi-shield me-1 text-muted"></i>@Model.CurrentEmployee.Role?.RoleName
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+
+  <!-- Greeting Banner -->
+  <div class="greeting-banner">
+    <div class="row align-items-center g-3">
+      <div class="col-auto d-none d-md-flex">
+        @{
+          var empPic = Model.CurrentEmployee.ProfilePicture;
+          var empInit = string.IsNullOrEmpty(Model.CurrentEmployee.EmployeeName) ? "E"
+              : (Model.CurrentEmployee.EmployeeName.Contains(' ')
+                  ? (Model.CurrentEmployee.EmployeeName[..1] + Model.CurrentEmployee.EmployeeName[(Model.CurrentEmployee.EmployeeName.IndexOf(' ')+1)..(Model.CurrentEmployee.EmployeeName.IndexOf(' ')+2)]).ToUpper()
+                  : Model.CurrentEmployee.EmployeeName[..1].ToUpper());
+        }
+        @if (!string.IsNullOrEmpty(empPic)) {
+          <img src="@empPic" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.3)" alt=""/>
+        } else {
+          <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;color:#fff">@empInit</div>
+        }
+      </div>
+      <div class="col">
+        <div class="greeting-banner__badge mb-2">
+          <i class="bi bi-calendar3"></i>@today.ToString("dddd, dd MMMM yyyy")
+        </div>
+        <div class="greeting-banner__title">
+          Good @(DateTime.Now.Hour < 12 ? "Morning" : DateTime.Now.Hour < 17 ? "Afternoon" : "Evening"), @Model.CurrentEmployee.EmployeeName 👋
+        </div>
+        <div class="greeting-banner__sub mt-1">
+          @if (Model.OnCallRole != "Not Scheduled") {
+            <span>You are <strong>@Model.OnCallRole</strong> this week.</span>
+          } else {
+            <span>You are not scheduled on-call this week.</span>
+          }
+          &nbsp;&middot;&nbsp;@Model.CurrentEmployee.Team?.TeamName
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status KPIs -->
+  <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;padding-bottom:8px;border-bottom:1px solid #e2e8f0;margin-bottom:16px">
+    My Status
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+      <div class="kpi @(Model.OnCallRole.Contains("Primary")?"kpi--green":Model.OnCallRole.Contains("Backup")?"kpi--amber":"kpi--cyan")">
+        <div class="kpi__icon"><i class="bi bi-calendar3-week"></i></div>
+        <div>
+          <div class="kpi__val" style="font-size:.9rem;font-weight:800">@Model.OnCallRole</div>
+          <div class="kpi__lbl">This Week's Role</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-xl-3">
+      <div class="kpi @(Model.ActiveLeave != null ? "kpi--red" : "kpi--green")">
+        <div class="kpi__icon"><i class="bi bi-calendar-minus"></i></div>
+        <div>
+          <div class="kpi__val" style="font-size:.9rem;font-weight:800">@(Model.ActiveLeave != null ? "On Leave" : "Working")</div>
+          <div class="kpi__lbl">Leave Status</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-xl-3">
+      <a asp-controller="Notifications" asp-action="Index" class="text-decoration-none">
+        <div class="kpi kpi--purple">
+          <div class="kpi__icon"><i class="bi bi-bell-fill"></i></div>
+          <div>
+            <div class="kpi__val">@Model.Notifications.Count(n=>n.Status=="Unread")</div>
+            <div class="kpi__lbl">Unread Alerts</div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-xl-3">
+      <a asp-controller="Employee" asp-action="MySchedule" class="text-decoration-none">
+        <div class="kpi kpi--blue">
+          <div class="kpi__icon"><i class="bi bi-list-check"></i></div>
+          <div>
+            <div class="kpi__val" style="font-size:.9rem;font-weight:800">Schedule</div>
+            <div class="kpi__lbl">View My History</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;padding-bottom:8px;border-bottom:1px solid #e2e8f0;margin-bottom:16px">
+    Quick Actions
+  </div>
+  <div class="row g-2 mb-4">
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="LeaveRequests" asp-action="Apply" class="qa-btn qa-primary">
+        <i class="bi bi-calendar-plus-fill"></i><span>Apply for Leave</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="LeaveRequests" asp-action="Index" class="qa-btn">
+        <i class="bi bi-calendar-minus-fill"></i><span>My Leave Requests</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="ShiftSwap" asp-action="Index" class="qa-btn">
+        <i class="bi bi-arrow-left-right"></i><span>Request Shift Swap</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="Employee" asp-action="MySchedule" class="qa-btn">
+        <i class="bi bi-calendar3-week"></i><span>My Schedule</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="Employee" asp-action="FullSchedule" class="qa-btn">
+        <i class="bi bi-people-fill"></i><span>Who Is On-Call</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="HolidayCalendar" asp-action="Index" class="qa-btn">
+        <i class="bi bi-calendar-heart-fill"></i><span>Holiday Calendar</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="Notifications" asp-action="Index" class="qa-btn">
+        <i class="bi bi-bell-fill"></i><span>Notifications</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3 col-xl-2">
+      <a asp-controller="Employee" asp-action="Profile" class="qa-btn">
+        <i class="bi bi-person-circle"></i><span>My Profile</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Bottom cards -->
+  <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;padding-bottom:8px;border-bottom:1px solid #e2e8f0;margin-bottom:16px">
+    This Week at a Glance
+  </div>
+  <div class="row g-3">
+
+    <!-- Schedule card -->
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-calendar-check me-2 text-primary"></i>This Week&apos;s On-Call</span>
+          <a asp-controller="Employee" asp-action="MySchedule" class="btn btn-xs btn-outline-primary">All Weeks</a>
+        </div>
+        <div class="card-body">
+          @if (Model.CurrentSchedule == null) {
+            <div class="text-center py-4 text-muted">
+              <i class="bi bi-calendar3 fs-1 d-block mb-2 opacity-25"></i>
+              <p class="mb-0 fw-semibold small">You are not scheduled on-call this week.</p>
+            </div>
+          } else {
+            <dl class="row g-2 mb-0">
+              <dt class="col-5 text-muted small">Team</dt>
+              <dd class="col-7 fw-semibold mb-0">@Model.CurrentSchedule.Team?.TeamName</dd>
+              <dt class="col-5 text-muted small">Week</dt>
+              <dd class="col-7 mb-0">@Model.CurrentSchedule.WeekStartDate?.ToString("dd MMM") – @Model.CurrentSchedule.WeekEndDate?.ToString("dd MMM yyyy")</dd>
+              <dt class="col-5 text-muted small">My Role</dt>
+              <dd class="col-7 mb-0">
+                <span class="badge @(Model.OnCallRole.Contains("Primary")?"bg-success":"bg-warning text-dark") px-2 py-1">
+                  <i class="bi bi-person-fill me-1"></i>@Model.OnCallRole
+                </span>
+              </dd>
+              @if (Model.CurrentSchedule.PrimaryEmployee != null) {
+                <dt class="col-5 text-muted small">Primary Phone</dt>
+                <dd class="col-7 mb-0">
+                  @if (!string.IsNullOrEmpty(Model.CurrentSchedule.PrimaryEmployee.Phone)) {
+                    <a href="tel:@Model.CurrentSchedule.PrimaryEmployee.Phone" class="text-decoration-none fw-semibold">
+                      <i class="bi bi-telephone-fill me-1 text-success"></i>@Model.CurrentSchedule.PrimaryEmployee.Phone
+                    </a>
+                  } else {
+                    <span class="text-muted">—</span>
+                  }
+                </dd>
+              }
+              @if (Model.CurrentSchedule.BackupEmployee != null) {
+                <dt class="col-5 text-muted small">Backup Phone</dt>
+                <dd class="col-7 mb-0">
+                  @if (!string.IsNullOrEmpty(Model.CurrentSchedule.BackupEmployee.Phone)) {
+                    <a href="tel:@Model.CurrentSchedule.BackupEmployee.Phone" class="text-decoration-none fw-semibold">
+                      <i class="bi bi-telephone-fill me-1 text-warning"></i>@Model.CurrentSchedule.BackupEmployee.Phone
+                    </a>
+                  } else {
+                    <span class="text-muted">—</span>
+                  }
+                </dd>
+              }
+              <dt class="col-5 text-muted small">Status</dt>
+              <dd class="col-7 mb-0"><span class="badge-status badge-@Model.CurrentSchedule.Status.ToLower()">@Model.CurrentSchedule.Status</span></dd>
+            </dl>
+            <div class="mt-3 pt-3 border-top">
+              <a asp-controller="ShiftSwap" asp-action="Index" class="btn btn-sm btn-outline-warning">
+                <i class="bi bi-arrow-left-right me-1"></i>Request Shift Swap
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications card -->
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-bell me-2 text-primary"></i>Recent Notifications</span>
+          <a asp-controller="Notifications" asp-action="Index" class="btn btn-xs btn-outline-primary">View All</a>
+        </div>
+        <div class="card-body p-0">
+          @if (!Model.Notifications.Any()) {
+            <div class="text-center py-4 text-muted">
+              <i class="bi bi-bell-slash fs-1 d-block mb-2 opacity-25"></i>
+              <p class="mb-0 fw-semibold small">No notifications yet.</p>
+            </div>
+          } else {
+            <ul class="list-group list-group-flush">
+              @foreach (var n in Model.Notifications.Take(5)) {
+                <li class="list-group-item d-flex justify-content-between align-items-start py-2 px-3 @(n.Status=="Unread"?"fw-semibold":"text-muted")">
+                  <div class="d-flex align-items-start gap-2">
+                    <div style="width:6px;height:6px;border-radius:50%;background:@(n.Status=="Unread"?"#4338ca":"#cbd5e1");flex-shrink:0;margin-top:6px"></div>
+                    <div>
+                      <span class="badge bg-primary-subtle text-primary me-1" style="font-size:.6rem">@n.NotificationType</span>
+                      <span class="small">@n.Message</span>
+                    </div>
+                  </div>
+                  <small class="text-nowrap ms-2 text-muted">@n.SentDate?.ToString("dd MMM")</small>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

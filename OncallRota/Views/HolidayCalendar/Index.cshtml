@@ -1,0 +1,45 @@
+@model IEnumerable<OncallRota.Models.HolidayCalendar>
+@{ Layout=Context.Session.GetString("RoleName")=="Admin"?"_AdminLayout":"_EmployeeLayout"; ViewData["Title"]="Holiday Calendar"; }
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 class="page-title"><i class="bi bi-calendar-heart me-2 text-primary"></i>Holiday Calendar</h1>
+    @if(Context.Session.GetString("RoleName")=="Admin"){
+      <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Holiday</a>}
+  </div>
+</div>
+<div class="page-body">
+  <div class="card"><div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover datatable mb-0 align-middle">
+        <thead class="table-light">
+          <tr><th>#</th><th>Holiday Name</th><th>Date</th><th>Location</th><th>Description</th><th>Status</th>
+          @if(Context.Session.GetString("RoleName")=="Admin"){<th class="text-end">Actions</th>}</tr>
+        </thead>
+        <tbody>
+          @{ int i=1; }
+          @foreach(var h in Model){
+            <tr>
+              <td class="text-muted">@(i++)</td>
+              <td class="fw-semibold">@h.HolidayName</td>
+              <td>@h.HolidayDate.ToString("dd MMM yyyy")</td>
+              <td><span class="badge bg-info-subtle text-info border">@(h.Location??"All")</span></td>
+              <td class="small text-muted">@(h.Description??"—")</td>
+              <td><span class="badge-status badge-@h.Status.ToLower()">@h.Status</span></td>
+              @if(Context.Session.GetString("RoleName")=="Admin"){
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <a asp-action="Edit" asp-route-id="@h.HolidayId" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                    <form asp-action="Delete" asp-route-id="@h.HolidayId" method="post" class="d-inline">
+                      @Html.AntiForgeryToken()
+                      <button type="submit" class="btn btn-outline-danger" data-confirm="Remove holiday?"><i class="bi bi-trash"></i></button>
+                    </form>
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+</div>

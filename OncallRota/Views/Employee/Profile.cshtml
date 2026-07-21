@@ -1,0 +1,133 @@
+@model OncallRota.Models.Employee
+@{ Layout = "~/Views/Shared/_EmployeeLayout.cshtml"; ViewData["Title"] = "My Profile"; }
+
+<div class="page-header">
+  <h1 class="page-title"><i class="bi bi-person-circle me-2 text-primary"></i>My Profile</h1>
+</div>
+
+<div class="page-body">
+  <div class="row justify-content-center g-4">
+
+    <!-- Left: Photo card -->
+    <div class="col-lg-3 col-md-4">
+      <div class="card text-center">
+        <div class="card-body py-4">
+          @{
+            var pic = !string.IsNullOrEmpty(Model.ProfilePicture)
+                ? Model.ProfilePicture
+                : "/images/profiles/default-avatar.svg";
+          }
+          <img id="profilePhoto" src="@pic"
+               class="avatar-xl mb-3" alt="@Model.EmployeeName"/>
+
+          <h5 class="fw-bold mb-1">@Model.EmployeeName</h5>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-3">
+            @(Model.Role?.RoleName ?? "---")
+          </span>
+
+          <!-- Upload photo -->
+          <form asp-action="UploadPicture" asp-controller="Employee"
+                method="post" enctype="multipart/form-data" id="uploadForm">
+            @Html.AntiForgeryToken()
+            <label class="btn btn-outline-primary btn-sm w-100 mb-2" for="picInput">
+              <i class="bi bi-camera-fill me-1"></i>Change Photo
+            </label>
+            <input type="file" name="photo" id="picInput" accept="image/*"
+                   class="d-none" onchange="submitPhotoForm(this)"/>
+          </form>
+
+          <!-- Remove photo — only shown when a custom photo is set -->
+          @if (!string.IsNullOrEmpty(Model.ProfilePicture)) {
+            <form asp-action="RemovePicture" asp-controller="Employee" method="post" class="mb-2">
+              @Html.AntiForgeryToken()
+              <button type="submit" class="btn btn-outline-danger btn-sm w-100"
+                      data-confirm="Remove your profile picture?">
+                <i class="bi bi-trash me-1"></i>Remove Photo
+              </button>
+            </form>
+          }
+
+          <div class="text-muted small">JPG · PNG · GIF · WebP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Details card -->
+    <div class="col-lg-6 col-md-8">
+      <div class="card h-100">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-info-circle me-2 text-primary"></i>Account Details
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <div class="text-muted small mb-1">Full Name</div>
+              <div class="fw-semibold">@Model.EmployeeName</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="text-muted small mb-1">Email Address</div>
+              <div class="fw-semibold">
+                <i class="bi bi-envelope me-1 text-muted"></i>@Model.Email
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="text-muted small mb-1">Phone</div>
+              <div class="fw-semibold">
+                <i class="bi bi-telephone me-1 text-muted"></i>@(Model.Phone ?? "Not provided")
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="text-muted small mb-1">Team</div>
+              <div class="fw-semibold">
+                <i class="bi bi-people me-1 text-muted"></i>@(Model.Team?.TeamName ?? "---")
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="text-muted small mb-1">Role</div>
+              <div class="fw-semibold">
+                <i class="bi bi-shield me-1 text-muted"></i>@(Model.Role?.RoleName ?? "---")
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="text-muted small mb-1">Region (IBM India Office)</div>
+              <div class="fw-semibold">
+                @if (!string.IsNullOrEmpty(Model.Region)) {
+                  <i class="bi bi-geo-alt-fill me-1 text-info"></i>@Model.Region
+                } else {
+                  <span class="text-muted">Not assigned</span>
+                }
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="text-muted small mb-1">Account Status</div>
+              <div>
+                <span class="badge-status badge-@Model.Status.ToLower()">@Model.Status</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-top">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+@section Scripts {
+<script>
+function submitPhotoForm(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById("profilePhoto").src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+    document.getElementById("uploadForm").submit();
+  }
+}
+</script>
+}

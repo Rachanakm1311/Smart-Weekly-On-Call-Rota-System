@@ -1,0 +1,108 @@
+﻿@model OncallRota.ViewModels.RotationQueueViewModel
+@{ Layout="_AdminLayout"; ViewData["Title"]="Rotation Queue";
+   var available = Model.TeamEmployees.Where(e=>!Model.Queue.Any(q=>q.EmployeeId==e.EmployeeId)).ToList();
+}
+<div class="page-header">
+  <h1 class="page-title"><i class="bi bi-arrow-repeat me-2 text-primary"></i>Rotation Queue</h1>
+  <p class="page-subtitle">Manage on-call rotation order per team</p>
+</div>
+<div class="page-body">
+  <!-- Team selector -->
+  <div class="card mb-3">
+    <div class="card-body py-2">
+      <form method="get" class="d-flex align-items-center gap-2">
+        <label class="form-label mb-0 fw-semibold">Team:</label>
+        <select name="teamId" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+          @foreach(var t in Model.AllTeams){
+            <option value="@t.TeamId" selected="@(t.TeamId==Model.TeamId)">@t.TeamName</option>}
+        </select>
+      </form>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <!-- Current Queue -->
+    <div class="col-lg-7">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <span><i class="bi bi-list-ol me-2"></i>Queue &mdash; @Model.TeamName</span>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle">@Model.Queue.Count members</span>
+        </div>
+        <div class="card-body p-0">
+          @if(!Model.Queue.Any()){
+            <p class="text-muted text-center py-4">No members in queue. Add employees from the panel on the right.</p>
+          } else {
+            <table class="table table-hover mb-0 align-middle">
+              <thead class="table-light"><tr><th>Position</th><th>Employee</th><th>Active</th><th class="text-end">Actions</th></tr></thead>
+              <tbody>
+                @foreach(var q in Model.Queue){
+                  <tr>
+                    <td><span class="badge bg-primary">@q.QueuePosition</span></td>
+                    <td class="fw-semibold">@q.Employee?.EmployeeName</td>
+                    <td><span class="badge-status @(q.IsActive==true?"badge-active":"badge-inactive")">@(q.IsActive==true?"Yes":"No")</span></td>
+                    <td class="text-end">
+                      <form asp-action="MoveUp" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="queueId" value="@q.QueueId"/>
+                        <input type="hidden" name="teamId" value="@Model.TeamId"/>
+                        <button class="btn btn-xs btn-outline-secondary" title="Move Up"><i class="bi bi-arrow-up"></i></button>
+                      </form>
+                      <form asp-action="MoveDown" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="queueId" value="@q.QueueId"/>
+                        <input type="hidden" name="teamId" value="@Model.TeamId"/>
+                        <button class="btn btn-xs btn-outline-secondary" title="Move Down"><i class="bi bi-arrow-down"></i></button>
+                      </form>
+                      <form asp-action="Remove" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="queueId" value="@q.QueueId"/>
+                        <input type="hidden" name="teamId" value="@Model.TeamId"/>
+                        <button class="btn btn-xs btn-outline-danger" data-confirm="Remove from queue?"><i class="bi bi-x"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Employee -->
+    <div class="col-lg-5">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-person-plus me-2"></i>Add to Queue</div>
+        <div class="card-body">
+          @if(!Model.TeamEmployees.Any()){
+            <div class="alert alert-warning mb-0">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>No employees assigned to @Model.TeamName.</strong><br/>
+              <span class="small">Go to <a asp-controller="Employees" asp-action="Index">Employees</a> and assign employees to this team first.</span>
+            </div>
+          } else if(!available.Any()){
+            <div class="alert alert-info mb-0">
+              <i class="bi bi-info-circle me-2"></i>
+              All active employees in <strong>@Model.TeamName</strong> are already in the queue.
+            </div>
+          } else {
+            <form asp-action="AddToQueue" method="post">
+              @Html.AntiForgeryToken()
+              <input type="hidden" name="teamId" value="@Model.TeamId"/>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Select Employee</label>
+                <select name="employeeId" class="form-select" required>
+                  <option value="">-- Select Employee --</option>
+                  @foreach(var e in available){
+                    <option value="@e.EmployeeId">@e.EmployeeName</option>
+                  }
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus me-1"></i>Add to Queue</button>
+            </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

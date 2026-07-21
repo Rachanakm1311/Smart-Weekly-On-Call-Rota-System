@@ -1,0 +1,373 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>3-Minute Demo Script — Smart On-Call Rota</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.65;color:#1f2328;background:#fff;padding:32px 16px 56px}
+.wrap{max-width:760px;margin:0 auto}
+
+h1{font-size:1.4rem;font-weight:800;margin-bottom:3px}
+.subtitle{color:#57606a;font-size:.88rem;margin-bottom:6px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;border:1px solid}
+.badge-blue{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.badge-green{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.badge-amber{background:#fffbeb;color:#92400e;border-color:#fde68a}
+
+/* Timeline */
+.timeline{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-bottom:8px}
+.tl-seg{display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff;letter-spacing:.05em}
+.tl-1{background:#2563eb;width:15%}
+.tl-2{background:#7c3aed;width:13%}
+.tl-3{background:#059669;width:18%}
+.tl-4{background:#0891b2;width:18%}
+.tl-5{background:#d97706;width:18%}
+.tl-6{background:#dc2626;width:10%}
+.tl-7{background:#1f2328;width:8%}
+.tl-legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:30px;font-size:.77rem;color:#57606a}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+/* Segment cards */
+.seg{border:1px solid #e5e7eb;border-radius:10px;margin-bottom:20px;overflow:hidden}
+.seg-head{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #e5e7eb}
+.seg-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff;flex-shrink:0}
+.seg-info{flex:1}
+.seg-title{font-weight:700;font-size:.95rem;line-height:1.3}
+.seg-desc{font-size:.78rem;color:#57606a;margin-top:1px}
+.seg-time{font-size:.77rem;font-weight:700;color:#57606a;background:#f7f8fa;border:1px solid #e5e7eb;border-radius:12px;padding:3px 11px;white-space:nowrap;flex-shrink:0}
+.seg-body{padding:14px 16px;background:#fff;display:grid;gap:12px}
+
+.lbl{font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;margin-bottom:5px}
+.lbl-say{color:#2563eb}.lbl-do{color:#7c3aed}
+
+.say{background:#eff6ff;border-left:3px solid #2563eb;border-radius:0 6px 6px 0;padding:11px 14px;font-style:italic;color:#1e3a5f;font-size:.9rem;line-height:1.6}
+.do{background:#f5f3ff;border-left:3px solid #7c3aed;border-radius:0 6px 6px 0;padding:11px 14px}
+.do ul{padding-left:18px}.do li{margin-bottom:4px;font-size:.87rem;color:#1f2328}
+.do li strong{color:#3730a3}
+
+.tip{margin-top:2px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;font-size:.82rem;color:#78350f}
+.tip strong{color:#92400e}
+
+.hl{background:#fef9c3;padding:1px 3px;border-radius:3px;font-weight:600;font-style:normal}
+
+/* Colors */
+.c1{background:#2563eb}.c2{background:#7c3aed}.c3{background:#059669}
+.c4{background:#0891b2}.c5{background:#d97706}.c6{background:#dc2626}.c7{background:#1f2328}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:6px}
+th{background:#f7f8fa;text-align:left;padding:8px 10px;font-weight:700;border:1px solid #e5e7eb;color:#1f2328}
+td{padding:7px 10px;border:1px solid #e5e7eb;vertical-align:top;color:#374151}
+tr:nth-child(even) td{background:#f9fafb}
+
+.section-hd{font-weight:800;font-size:.95rem;margin:28px 0 10px;padding-bottom:6px;border-bottom:2px solid #e5e7eb}
+
+.footer{margin-top:44px;padding-top:14px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#57606a}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>3-Minute Demo Script</h1>
+  <p class="subtitle">Smart Weekly On-Call Rota Management System  ·  Segment-by-segment narration &amp; screen guide</p>
+  <div class="meta">
+    <span class="badge badge-blue">⏱ Total: 3 min 00 sec</span>
+    <span class="badge badge-green">7 Segments</span>
+    <span class="badge badge-amber">Covers ICA · Holidays · Auto &amp; Manual Rota · Friday Email</span>
+  </div>
+
+  
+  <div class="timeline">
+    <div class="tl-seg tl-1">INTRO</div>
+    <div class="tl-seg tl-2">ADMIN</div>
+    <div class="tl-seg tl-3">ROTA</div>
+    <div class="tl-seg tl-4">HOLIDAY</div>
+    <div class="tl-seg tl-5">EMPLOYEE</div>
+    <div class="tl-seg tl-6">ICA</div>
+    <div class="tl-seg tl-7">CLOSE</div>
+  </div>
+  <div class="tl-legend">
+    <span><span class="dot" style="background:#2563eb"></span>0:00–0:25 · Intro &amp; Login</span>
+    <span><span class="dot" style="background:#7c3aed"></span>0:25–0:50 · Admin Dashboard</span>
+    <span><span class="dot" style="background:#059669"></span>0:50–1:30 · Rota Generation (Auto &amp; Manual)</span>
+    <span><span class="dot" style="background:#0891b2"></span>1:30–1:55 · Holiday Calendar &amp; Region Skip</span>
+    <span><span class="dot" style="background:#d97706"></span>1:55–2:30 · Employee Portal &amp; Friday Email</span>
+    <span><span class="dot" style="background:#dc2626"></span>2:30–2:50 · ICA Tool Integration</span>
+    <span><span class="dot" style="background:#1f2328"></span>2:50–3:00 · Closing</span>
+  </div>
+
+  
+  <div class="seg">
+    <div class="seg-head">
+      <div class="seg-num c1">1</div>
+      <div class="seg-info">
+        <div class="seg-title">Introduction &amp; Login</div>
+        <div class="seg-desc">Set the scene — what problem does this solve?</div>
+      </div>
+      <div class="seg-time">0:00 – 0:25</div>
+    </div>
+    <div class="seg-body">
+      <div>
+        <div class="lbl lbl-say">🎤 Say</div>
+        <div class="say">
+          "This is the <em>Smart Weekly On-Call Rota Management System</em> — built on ASP.NET Core MVC and SQL Server for IBM's application support teams. The problem it solves: no more spreadsheets, no more manual chasing. It automates weekly on-call scheduling, respects regional public holidays, handles leave and shift swaps, sends Friday email reminders, and gives every engineer instant access to IBM's ICA resolution tool during P1 and P2 incidents."
+        </div>
+      </div>
+      <div>
+        <div class="lbl lbl-do">🖥 Screen Actions</div>
+        <div class="do"><ul>
+          <li>Start on the <strong>Login page</strong> — show both Admin and Employee login options</li>
+          <li>Enter Admin credentials and click <strong>Login</strong></li>
+          <li>Let the Admin Dashboard fully load before moving on</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="seg">
+    <div class="seg-head">
+      <div class="seg-num c2">2</div>
+      <div class="seg-info">
+        <div class="seg-title">Admin Dashboard — Central Command</div>
+        <div class="seg-desc">Show the overview and employee management</div>
+      </div>
+      <div class="seg-time">0:25 – 0:50</div>
+    </div>
+    <div class="seg-body">
+      <div>
+        <div class="lbl lbl-say">🎤 Say</div>
+        <div class="say">
+          "The Admin Dashboard shows a live snapshot — active teams, total employees, pending leave requests, and pending shift swaps. The current week's on-call schedule is right here with the Primary and Backup engineer for each team — including their <em class="hl">phone numbers</em>, which we'll use later for ServiceNow integration. Employees are assigned an IBM India <em class="hl">region</em> — Bangalore, Hyderabad, Pune, Chennai, Kolkata, or Delhi — which drives the holiday logic."
+        </div>
+      </div>
+      <div>
+        <div class="lbl lbl-do">🖥 Screen Actions</div>
+        <div class="do"><ul>
+          <li>Point to KPI cards — Teams, Employees, Pending Leaves, Pending Swaps, Current On-Call</li>
+          <li>Scroll to the <strong>Current Week On-Call table</strong> — hover over the Primary column to show phone number beneath the name</li>
+          <li>Click <strong>Employees</strong> in the sidebar — show the list with the new <strong>Region</strong> badge (e.g. Bangalore, Kolkata)</li>
+          <li>Click <strong>Edit</strong> on one employee — show the Region dropdown (12 IBM India offices)</li>
+          <li>Press <strong>Cancel</strong> and return to Dashboard</li>
+        </ul></div>
+        <div class="tip"><strong>Tip:</strong> Pause briefly on the phone number in the on-call table — it's a key detail for the ServiceNow story.</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="seg">
+    <div class="seg-head">
+      <div class="seg-num c3">3</div>
+      <div class="seg-info">
+        <div class="seg-title">Rota Generation — Automatic &amp; Manual</div>
+        <div class="seg-desc">The core engine — show both modes</div>
+      </div>
+      <div class="seg-time">0:50 – 1:30</div>
+    </div>
+    <div class="seg-body">
+      <div>
+        <div class="lbl lbl-say">🎤 Say</div>
+        <div class="say">
+          "There are two ways the rota gets generated. <em>Automatically</em> — every Friday at 8 AM, a background service runs and generates next week's schedule for all teams, then immediately emails the assigned engineers. <em>Manually</em> — an Admin can generate a rota for any team and any week right here by clicking 'Generate Weekly Rota'. The system uses a <em class="hl">Rotation Queue</em> — it picks the next person in line as Primary and the person after as Backup, automatically skipping anyone on approved leave or <em class="hl">on a regional holiday</em>. After each week, the Primary engineer moves to the back of the queue — completely fair rotation."
+        </div>
+      </div>
+      <div>
+        <div class="lbl lbl-do">🖥 Screen Actions</div>
+        <div class="do"><ul>
+          <li>Click <strong>OnCall Schedule</strong> in the sidebar — show the schedule table with phone numbers visible</li>
+          <li>Click <strong>Generate Weekly Rota</strong> button — the modal opens</li>
+          <li>Select a team from the dropdown, pick a week date — point out: <em>"This is the manual override"</em></li>
+          <li>Click <strong>Cancel</strong> (don't actually generate to keep data clean)</li>
+          <li>Click <strong>Rotation Queue</strong> in the sidebar — show the position order for one team</li>
+          <li>Say: <em>"Queue position 1 becomes Primary, position 2 becomes Backup — next week they rotate"</em></li>
+        </ul></div>
+        <div class="tip"><strong>Tip:</strong> Mention: "The <strong>automatic Friday run</strong> means the admin never has to remember to do this — it just happens every week."</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="seg">
+    <div class="seg-head">
+      <div class="seg-num c4">4</div>
+      <div class="seg-info">
+        <div class="seg-title">Holiday Calendar &amp; Region-Aware Skipping</div>
+        <div class="seg-desc">A key differentiator — regional public holidays</div>
+      </div>
+      <div class="seg-time">1:30 – 1:55</div>
+    </div>
+    <div class="seg-body">
+      <div>
+        <div class="lbl lbl-say">🎤 Say</div>
+        <div class="say">
+          "Here's something unique. IBM India has regional holidays — Ugadi in Bangalore, Durga Puja in Kolkata, Bonalu in Hyderabad, and so on. When the rota generator runs, it checks whether the week contains a holiday in an employee's region. If it does, that employee is <em class="hl">automatically skipped</em> and the next available person is picked instead. But — if an engineer <em class="hl">volunteers to work on that holiday</em>, they can submit a 'Holiday Work' leave request, confirm their comp-off date, and once approved, they stay in the rotation pool."
+        </div>
+      </div>
+      <div>
+        <div class="lbl lbl-do">🖥 Screen Actions</div>
+        <div class="do"><ul>
+          <li>Click <strong>Holiday Calendar</strong> in the sidebar — show the list of regional holidays with Location column (Bangalore, Kolkata, Hyderabad…)</li>
+          <li>Switch to <strong>Employee portal</strong> (second browser tab)</li>
+          <li>Click <strong>Apply Leave</strong> → change Leave Type to <strong>"Holiday Work (Comp-Off)"</strong></li>
+          <li>Show the amber panel that appears: confirmation checkbox + comp-off date picker</li>
+          <li>Say: <em>"Once approved, the rota generator treats this employee as available despite the holiday"</em></li>
+          <li>Press <strong>Cancel</strong> and return</li>
+        </ul></div>
+        <div class="tip"><strong>Tip:</strong> This segment differentiates the system from a basic scheduler — linger here for a second.</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="seg">
+    <div class="seg-head">
+      <div class="seg-num c5">5</div>
+      <div class="seg-info">
+        <div class="seg-title">Employee Portal &amp; Friday Email Notification</div>
+        <div class="seg-desc">Self-service + automated communication</div>
+      </div>
+      <div class="seg-time">1:55 – 2:30</div>
+    </div>
+    <div class="seg-body">
+      <div>
+        <div class="lbl lbl-say">🎤 Say</div>
+        <div class="say">
+          "Every employee has their own portal. Their dashboard tells them instantly whether they're Primary, Backup, or not scheduled this week. They can see the <em class="hl">full team schedule</em> with contact numbers for the on-call engineers — useful when they need to escalate. They can apply for leave, request a shift swap with a colleague, and manage notifications. And every Friday at 8 AM, the system <em class="hl">automatically sends an email</em> to next week's Primary and Backup engineers with their on-call dates — so they're never caught off guard."
+        </div>
+      </div>
+      <div>
+        <div class="lbl lbl-do">🖥 Screen Actions</div>
+        <div class="do"><ul>
+          <li>On the <strong>Employee Dashboard</strong> — point to the on-call role banner ("You are PRIMARY on-call this week")</li>
+          <li>Scroll to the <strong>This Week's On-Call card</strong> — show Primary Phone and Backup Phone links</li>
+          <li>Click <strong>Who Is On-Call</strong> — show the full schedule table; point out phone numbers under each name</li>
+          <li>Click <strong>Notifications</strong> — show a <em>"WeeklyReminder"</em> notification: <em>"You are the PRIMARY on-call engineer for week…"</em></li>
+          <li>Say: <em>"This same message is also sent as an <strong>email</strong> every Friday — both in-app and via Gmail"</em></li>
+          <li>Click <strong>Leave Requests → Apply</strong> — briefly show the Holiday Work option</li>
+        </ul></div>
+        <div class="tip"><strong>Tip:</strong> Pre-load the Notifications page in advance so there's at least one WeeklyReminder visible.</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="seg">
+    <div class="seg-head">
+      <div class="seg-num c6">6</div>
+      <div class="seg-info">
+        <div class="seg-title">ICA Tool — P1 / P2 Incident Resolution</div>
+        <div class="seg-desc">The AI-powered resolution assistant</div>
+      </div>
+      <div class="seg-time">2:30 – 2:50</div>
+    </div>
+    <div class="seg-body">
+      <div>
+        <div class="lbl lbl-say">🎤 Say</div>
+        <div class="say">
+          "When a P1 or P2 incident fires, the on-call engineer needs to act fast. We've integrated IBM's <em class="hl">ICA tool — the Intelligent Curation Assistant</em> — directly into the portal. Every page has a blue robot button in the bottom corner. Click it, and a drawer slides in with the ICA chat for your specific team. The engineer pastes the error message or application logs, and ICA suggests resolution steps based on past incidents and runbooks. We've already set up the MS-COTS team agent — and as the other teams create their ICA agents, we just drop in the new URL. No code changes needed."
+        </div>
+      </div>
+      <div>
+        <div class="lbl lbl-do">🖥 Screen Actions</div>
+        <div class="do"><ul>
+          <li>Click the <strong>blue robot button</strong> (bottom-right of screen) — the ICA drawer slides in smoothly</li>
+          <li>Point to the drawer header: <em>"Agent for MS-COTS · P1 / P2 resolution"</em></li>
+          <li>Read the 5-step guide briefly — paste error, get steps, document findings, escalate to Backup</li>
+          <li>Click <strong>Open ICA Tool</strong> — show it opening in a new tab</li>
+          <li>Close the tab, close the drawer (Escape key)</li>
+          <li>Switch to <strong>Admin portal</strong> — open the ICA drawer there, show the <strong>team picker dropdown</strong> (Admin can select any team)</li>
+        </ul></div>
+        <div class="tip"><strong>Tip:</strong> Mention: <em>"In the Admin portal, the drawer has a team selector — so the admin can open the right agent for whichever team is having the incident."</em></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="seg">
+    <div class="seg-head">
+      <div class="seg-num c7">7</div>
+      <div class="seg-info">
+        <div class="seg-title">Closing Summary</div>
+        <div class="seg-desc">Wrap up with value and tech stack</div>
+      </div>
+      <div class="seg-time">2:50 – 3:00</div>
+    </div>
+    <div class="seg-body">
+      <div>
+        <div class="lbl lbl-say">🎤 Say</div>
+        <div class="say">
+          "To summarise — automated and manual rota generation with fair rotation, region-aware holiday skipping, comp-off support, Friday email reminders, phone numbers for ServiceNow integration, and the ICA tool one click away for every on-call engineer. Built on ASP.NET Core 10, Entity Framework Core, SQL Server, and Bootstrap 5. Thank you."
+        </div>
+      </div>
+      <div>
+        <div class="lbl lbl-do">🖥 Screen Actions</div>
+        <div class="do"><ul>
+          <li>Return to the <strong>Admin Dashboard</strong> — a clean, full-screen ending shot</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="section-hd">Quick Reference — Features to Cover</div>
+  <table>
+    <thead><tr><th>Feature</th><th>Who</th><th>Where to Show</th><th>Key Talking Point</th></tr></thead>
+    <tbody>
+      <tr><td>Live KPI dashboard</td><td>Admin</td><td>Admin Dashboard</td><td>Single view of all pending work</td></tr>
+      <tr><td>Phone numbers on on-call cards</td><td>Both</td><td>Admin dashboard table + Employee on-call card</td><td>Ready for ServiceNow integration</td></tr>
+      <tr><td>Employee Region (IBM India offices)</td><td>Admin</td><td>Employees list → Edit form</td><td>Drives holiday skip logic</td></tr>
+      <tr><td>Auto rota generation — Friday 8 AM</td><td>System</td><td>Notifications "WeeklyReminder"</td><td>Zero manual effort every week</td></tr>
+      <tr><td>Manual rota generation</td><td>Admin</td><td>Schedule → Generate Weekly Rota modal</td><td>Override for any team/week</td></tr>
+      <tr><td>Rotation Queue (fair order)</td><td>Admin</td><td>Rotation Queue page</td><td>Position 1 = Primary, position 2 = Backup</td></tr>
+      <tr><td>Regional Holiday Calendar</td><td>Admin</td><td>Holiday Calendar page</td><td>Location column maps to employee Region</td></tr>
+      <tr><td>Holiday Work + Comp-Off</td><td>Employee</td><td>Apply Leave → Holiday Work type</td><td>Employee stays in rotation pool</td></tr>
+      <tr><td>Leave &amp; Shift Swap approval</td><td>Admin</td><td>Leave Requests + Shift Swap admin views</td><td>Approve/Reject with one click</td></tr>
+      <tr><td>Who Is On-Call (with phones)</td><td>Employee</td><td>Employee → Who Is On-Call</td><td>Contact info always visible</td></tr>
+      <tr><td>Friday email + in-app notification</td><td>System</td><td>Notifications page</td><td>Dual channel — email + in-app</td></tr>
+      <tr><td>ICA — per-team AI agent</td><td>Both</td><td>Robot FAB button (all pages)</td><td>MS-COTS live; 4 teams pending agent creation</td></tr>
+    </tbody>
+  </table>
+
+  
+  <div class="section-hd">Recording Tips</div>
+  <table>
+    <thead><tr><th>What</th><th>Recommendation</th></tr></thead>
+    <tbody>
+      <tr><td>Browser tabs</td><td>Open Tab 1: Admin, Tab 2: Employee (pre-logged-in) <em>before</em> you start recording</td></tr>
+      <tr><td>Browser zoom</td><td>90% — fits the full sidebar + content without scrolling</td></tr>
+      <tr><td>Window size</td><td>1280 × 720 minimum for readable text in the recording</td></tr>
+      <tr><td>Data to prepare</td><td>Ensure there's at least 1 <strong>WeeklyReminder</strong> notification and a current week schedule with phone numbers visible</td></tr>
+      <tr><td>ICA drawer</td><td>Test that it opens and the link works before recording — SSO login may be required</td></tr>
+      <tr><td>Holiday Calendar</td><td>Make sure at least 2–3 regional holidays are seeded so the Location column is visible</td></tr>
+      <tr><td>Pace</td><td>~130 words/min is ideal for 3 min. Speak deliberately; pause 1 sec after clicking anything</td></tr>
+      <tr><td>Mouse</td><td>Move slowly and <em>hover</em> on items you describe — let the viewer read the UI</td></tr>
+      <tr><td>Tool</td><td>Windows Game Bar (Win + G) → Capture, or OBS Studio for more control</td></tr>
+      <tr><td>Post-recording</td><td>Trim the first 2 sec of silence and add a 1-sec fade-out at the end</td></tr>
+    </tbody>
+  </table>
+
+  
+  <div class="section-hd">One-Line Cheat Sheet — Key Phrases to Memorise</div>
+  <table>
+    <thead><tr><th>Moment</th><th>Say exactly this</th></tr></thead>
+    <tbody>
+      <tr><td>Opening</td><td><em>"No more spreadsheets — this system automates everything."</em></td></tr>
+      <tr><td>Auto rota</td><td><em>"Every Friday at 8 AM, the system generates next week's rota and emails the engineers."</em></td></tr>
+      <tr><td>Manual rota</td><td><em>"Admins can also generate it manually for any team and any week."</em></td></tr>
+      <tr><td>Regional holidays</td><td><em>"It knows which employees are in Bangalore, Kolkata, Chennai — and skips them on their regional holiday."</em></td></tr>
+      <tr><td>Holiday Work</td><td><em>"If an engineer volunteers to work the holiday, they submit a Holiday Work request and stay in the pool."</em></td></tr>
+      <tr><td>Phone numbers</td><td><em>"Phone numbers are on every on-call card — ready to plug into ServiceNow for automatic calling."</em></td></tr>
+      <tr><td>ICA</td><td><em>"Click the robot button — ICA opens for your team. Paste the error, get the fix."</em></td></tr>
+      <tr><td>ICA pending teams</td><td><em>"MS-COTS is live. The other four teams are being set up in ICA — we just drop in the URL when ready."</em></td></tr>
+      <tr><td>Closing</td><td><em>"Fair rotation, regional holidays, Friday emails, and ICA — all in one system."</em></td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">Made with IBM Bob</div>
+</div>
+</body>
+</html>

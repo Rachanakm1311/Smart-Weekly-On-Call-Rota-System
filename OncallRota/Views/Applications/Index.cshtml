@@ -1,0 +1,39 @@
+﻿@model IEnumerable<OncallRota.Models.Application>
+@{ Layout="_AdminLayout"; ViewData["Title"]="Applications"; }
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 class="page-title"><i class="bi bi-app-indicator me-2 text-primary"></i>Applications</h1>
+    <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Add Application</a>
+  </div>
+</div>
+<div class="page-body">
+  <div class="card"><div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover datatable mb-0 align-middle">
+        <thead class="table-light">
+          <tr><th>#</th><th>Application Name</th><th>Team</th><th>Status</th><th class="text-end">Actions</th></tr>
+        </thead>
+        <tbody>
+          @{ int i=1; }
+          @foreach(var a in Model){
+            <tr>
+              <td class="text-muted">@(i++)</td>
+              <td class="fw-semibold">@a.ApplicationName</td>
+              <td><span class="badge bg-secondary-subtle text-secondary border">@a.Team?.TeamName</span></td>
+              <td><span class="badge-status badge-@a.Status.ToLower()">@a.Status</span></td>
+              <td class="text-end">
+                <div class="btn-group btn-group-sm">
+                  <a asp-action="Edit" asp-route-id="@a.ApplicationId" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                  <form asp-action="Delete" asp-route-id="@a.ApplicationId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger" data-confirm="Delete this application?"><i class="bi bi-trash"></i></button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div></div>
+</div>

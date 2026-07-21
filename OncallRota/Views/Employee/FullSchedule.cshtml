@@ -1,0 +1,156 @@
+@model List<OncallRota.Models.OnCallSchedule>
+@{
+    Layout = "_EmployeeLayout";
+    ViewData["Title"] = "Who Is On-Call";
+    var today        = (DateTime)ViewBag.Today;
+    var myEmpId      = (int)ViewBag.MyEmployeeId;
+
+    // Group all entries by WeekStartDate descending
+    var weeks = Model
+        .GroupBy(s => s.WeekStartDate)
+        .OrderByDescending(g => g.Key)
+        .ToList();
+}
+
+<div class="page-header">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div>
+      <h1 class="page-title">
+        <i class="bi bi-calendar3-week me-2 text-primary"></i>Who Is On-Call
+      </h1>
+      <p class="page-subtitle">Full on-call schedule — all teams, every week</p>
+    </div>
+    <a asp-action="MySchedule" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-person-fill me-1"></i>My Schedule Only
+    </a>
+  </div>
+</div>
+
+<div class="page-body">
+
+  @if (!Model.Any()) {
+    <div class="card">
+      <div class="card-body text-center py-5 text-muted">
+        <i class="bi bi-calendar3 fs-1 d-block mb-2 opacity-25"></i>
+        <p class="mb-0">No on-call schedule has been generated yet.</p>
+      </div>
+    </div>
+  }
+
+  @foreach (var week in weeks) {
+    var weekStart = week.Key;
+    var weekEnd   = week.First().WeekEndDate;
+    var isCurrent = weekStart <= today && weekEnd >= today;
+
+    <div class="card mb-3 @(isCurrent ? "border-primary border-2" : "")">
+      <div class="card-header d-flex align-items-center justify-content-between py-2">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-calendar2-week @(isCurrent?"text-primary":"text-muted")"></i>
+          <span class="fw-semibold">
+            @weekStart?.ToString("dd MMM yyyy") – @weekEnd?.ToString("dd MMM yyyy")
+          </span>
+        </div>
+        @if (isCurrent) {
+          <span class="badge bg-success px-2 py-1">
+            <i class="bi bi-circle-fill me-1" style="font-size:.45rem"></i>Current Week
+          </span>
+        } else if (weekStart > today) {
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2">Upcoming</span>
+        } else {
+          <span class="badge bg-light text-muted border px-2">Past</span>
+        }
+      </div>
+
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width:200px">Team</th>
+                <th>Primary On-Call</th>
+                <th>Backup On-Call</th>
+                <th style="width:90px">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (var s in week.OrderBy(x => x.Team?.TeamName)) {
+                var isPrimaryMe = s.PrimaryEmployeeId == myEmpId;
+                var isBackupMe  = s.BackupEmployeeId  == myEmpId;
+
+                <tr class="@(isPrimaryMe||isBackupMe ? "table-primary" : "")"
+                    data-oncall-team="@s.Team?.TeamName"
+                    data-primary-name="@s.PrimaryEmployee?.EmployeeName"
+                    data-primary-phone="@s.PrimaryEmployee?.Phone"
+                    data-backup-name="@s.BackupEmployee?.EmployeeName"
+                    data-backup-phone="@s.BackupEmployee?.Phone">
+                  <td class="fw-semibold">
+                    @s.Team?.TeamName
+                    @if (isPrimaryMe || isBackupMe) {
+                      <span class="badge bg-primary ms-1" style="font-size:.6rem">You</span>
+                    }
+                  </td>
+                  <td>
+                    @if (s.PrimaryEmployee != null) {
+                      var ppic = !string.IsNullOrEmpty(s.PrimaryEmployee.ProfilePicture) ? s.PrimaryEmployee.ProfilePicture : null;
+                      <div class="d-flex align-items-center gap-2">
+                        @if (ppic != null) {
+                          <img src="@ppic" class="avatar-sm" alt="@s.PrimaryEmployee.EmployeeName" style="width:30px;height:30px"/>
+                        } else {
+                          <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700;flex-shrink:0">
+                            @s.PrimaryEmployee.EmployeeName[..1].ToUpper()
+                          </div>
+                        }
+                        <div>
+                          <div class="fw-semibold small @(isPrimaryMe?"text-primary":"")">@s.PrimaryEmployee.EmployeeName</div>
+                          @if (!string.IsNullOrEmpty(s.PrimaryEmployee.Phone)) {
+                            <a href="tel:@s.PrimaryEmployee.Phone" class="text-decoration-none" style="font-size:.68rem;color:#16a34a">
+                              <i class="bi bi-telephone-fill me-1"></i>@s.PrimaryEmployee.Phone
+                            </a>
+                          } else {
+                            <div class="text-muted" style="font-size:.68rem">No phone on record</div>
+                          }
+                        </div>
+                      </div>
+                    } else {
+                      <span class="text-muted small">—</span>
+                    }
+                  </td>
+                  <td>
+                    @if (s.BackupEmployee != null) {
+                      var bpic = !string.IsNullOrEmpty(s.BackupEmployee.ProfilePicture) ? s.BackupEmployee.ProfilePicture : null;
+                      <div class="d-flex align-items-center gap-2">
+                        @if (bpic != null) {
+                          <img src="@bpic" class="avatar-sm" alt="@s.BackupEmployee.EmployeeName" style="width:30px;height:30px"/>
+                        } else {
+                          <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700;flex-shrink:0">
+                            @s.BackupEmployee.EmployeeName[..1].ToUpper()
+                          </div>
+                        }
+                        <div>
+                          <div class="fw-semibold small @(isBackupMe?"text-primary":"")">@s.BackupEmployee.EmployeeName</div>
+                          @if (!string.IsNullOrEmpty(s.BackupEmployee.Phone)) {
+                            <a href="tel:@s.BackupEmployee.Phone" class="text-decoration-none" style="font-size:.68rem;color:#d97706">
+                              <i class="bi bi-telephone-fill me-1"></i>@s.BackupEmployee.Phone
+                            </a>
+                          } else {
+                            <div class="text-muted" style="font-size:.68rem">No phone on record</div>
+                          }
+                        </div>
+                      </div>
+                    } else {
+                      <span class="text-muted small">—</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="badge-status badge-@s.Status.ToLower()">@s.Status</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

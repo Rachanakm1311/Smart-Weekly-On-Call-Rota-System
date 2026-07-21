@@ -1,0 +1,226 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>IBM Bob Project Submission — Smart On-Call Rota</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.65;color:#1f2328;background:#f6f8fa;padding:36px 16px 60px}
+.page{max-width:760px;margin:0 auto}
+
+/* Header */
+.hdr{background:#1d4ed8;border-radius:10px 10px 0 0;padding:30px 36px;color:#fff}
+.hdr h1{font-size:1.35rem;font-weight:800;margin-bottom:4px}
+.hdr p{font-size:.86rem;opacity:.82}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.badge{padding:3px 11px;border-radius:20px;font-size:.71rem;font-weight:700;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff}
+
+/* Form card */
+.card{background:#fff;border:1px solid #d0d7de;border-top:none;padding:0}
+.card:last-of-type{border-radius:0 0 10px 10px}
+
+/* Field block */
+.field{padding:26px 36px;border-bottom:1px solid #e5e7eb}
+.field:last-child{border-bottom:none}
+
+.field-q{font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6b7280;margin-bottom:3px}
+.field-hint{font-size:.78rem;color:#9ca3af;margin-bottom:12px;font-style:italic}
+.field-label{font-size:1rem;font-weight:700;color:#1f2328;margin-bottom:10px}
+
+/* Answer box */
+.answer{background:#f0f7ff;border:1.5px solid #93c5fd;border-left:4px solid #1d4ed8;border-radius:8px;padding:14px 18px;color:#1e3a5f;font-size:.93rem;line-height:1.75}
+.answer.green{background:#f0fdf4;border-color:#6ee7b7;border-left-color:#10b981;color:#065f46}
+.answer.pill{display:inline-block;padding:8px 22px;border-radius:24px;font-weight:800;font-size:.95rem}
+
+/* Hours grid */
+.hrs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.hrs-card{border:1px solid #d0d7de;border-radius:8px;padding:18px 16px;text-align:center}
+.hrs-card .lbl{font-size:.74rem;font-weight:700;color:#6b7280;margin-bottom:8px}
+.hrs-card .val{font-size:2.6rem;font-weight:900;line-height:1}
+.hrs-card .sub{font-size:.73rem;color:#9ca3af;margin-top:5px}
+.hrs-card.before .val{color:#dc2626}
+.hrs-card.after  .val{color:#10b981}
+.saving{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 16px;text-align:center;font-size:.86rem;font-weight:700;color:#166534}
+
+/* Impacts */
+.impacts{display:flex;flex-direction:column;gap:10px}
+.impact{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:8px;border:1px solid #d0d7de;background:#f9fafb}
+.impact.on{background:#eff6ff;border-color:#93c5fd}
+.chk{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0;margin-top:1px}
+.chk.yes{background:#1d4ed8;color:#fff}
+.chk.no{background:#e5e7eb;color:#9ca3af}
+.impact-body strong{display:block;font-size:.88rem;font-weight:700;color:#1e3a5f;margin-bottom:2px}
+.impact-body span{font-size:.83rem;color:#374151;line-height:1.5}
+
+/* Note */
+.note-box{margin-top:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 16px;font-size:.82rem;color:#78350f}
+.note-box strong{color:#92400e}
+
+/* Footer */
+.footer{margin-top:32px;padding-top:12px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#9ca3af}
+</style>
+</head>
+<body>
+<div class="page">
+
+  
+  <div class="hdr">
+    <h1>Smart Weekly On-Call Rota Management System</h1>
+    <p>IBM Bob Project Submission Form — Pre-filled Answers</p>
+    <div class="badges">
+      <span class="badge">ASP.NET Core 10</span>
+      <span class="badge">SQL Server</span>
+      <span class="badge">Built with IBM Bob</span>
+      <span class="badge">ICA Integrated</span>
+    </div>
+  </div>
+
+  <div class="card">
+
+    
+    <div class="field">
+      <div class="field-q">Field 1 of 5</div>
+      <div class="field-label">In hours, how long did the task take to complete?</div>
+      <div class="field-hint">Can enter decimals. For example, if the task took 15 minutes, enter .25</div>
+
+      <div class="hrs">
+        <div class="hrs-card before">
+          <div class="lbl">before IBM Bob (and/or ICA)? *</div>
+          <div class="val">8</div>
+          <div class="sub">hours</div>
+        </div>
+        <div class="hrs-card after">
+          <div class="lbl">with IBM Bob (and/or ICA)? *</div>
+          <div class="val">2</div>
+          <div class="sub">hours</div>
+        </div>
+      </div>
+      <div class="saving">75% time saved  ·  6 hours recovered per build cycle</div>
+
+      <div class="note-box" style="margin-top:12px">
+        <strong>Why these numbers?</strong><br />
+        Building 14 controllers, 10 EF models, 5 services, 35+ Razor views, the SQL seed script, and all demo materials
+        from scratch would take a full 8-hour day. With IBM Bob generating the scaffolding, service logic, seed script,
+        and demo artefacts, the actual effort was ~2 hours.
+        <br /><br />
+        <strong>Adjust these to reflect your actual experience before submitting.</strong>
+      </div>
+    </div>
+
+    
+    <div class="field">
+      <div class="field-q">Field 2 of 5</div>
+      <div class="field-label">How often do you do this task?</div>
+      <div class="answer green pill">✓   Less than once a month</div>
+      <div class="note-box" style="margin-top:12px">
+        <strong>Reasoning:</strong> Building a full-stack production application (DB schema, backend, UI, email integration, background services, demo materials) is a one-time project build — not a recurring weekly or monthly task. Once deployed, the system runs autonomously. Select <strong>"Less than once a month"</strong> as this represents a project-level effort done occasionally.
+      </div>
+    </div>
+
+    
+    <div class="field">
+      <div class="field-q">Field 3 of 5</div>
+      <div class="field-label">Which path are you submitting to? *</div>
+      <div class="answer green pill">✓   Build</div>
+      <div class="note-box" style="margin-top:12px">
+        <strong>Reasoning:</strong> This is a net-new internal web application built from scratch using IBM Bob as an AI coding partner. No existing system was migrated or modernised — the <strong>Build</strong> path is the correct choice.
+      </div>
+    </div>
+
+    
+    <div class="field">
+      <div class="field-q">Field 4 of 5</div>
+      <div class="field-label">Solution statement *  <span style="font-weight:400;color:#9ca3af;font-size:.82rem">500 words or less — copy the text below</span></div>
+      <div class="answer">
+        The <strong>Smart Weekly On-Call Rota Management System</strong> solves the manual, error-prone process of managing weekly on-call schedules for IBM application support teams across multiple locations in India.
+        <br /><br />
+        <strong>The problem:</strong> On-call assignments were tracked in spreadsheets with no automated handling of leave, shift swaps, or regional public holidays across IBM India offices (Bangalore, Hyderabad, Pune, Chennai, Kolkata, Delhi). This led to missed rotations, engineers being assigned during their regional holidays, and no reliable audit trail.
+        <br /><br />
+        <strong>The solution:</strong> A production-ready ASP.NET Core MVC web application backed by SQL Server. It maintains a fair Rotation Queue per team, automatically assigning the next engineer in line as Primary and the following as Backup each week. The system respects approved leave and regional public holidays — automatically skipping engineers who are unavailable. If an engineer volunteers to work on their regional holiday, they submit a Holiday Work (Comp-Off) request; once approved, they remain in the rotation pool.
+        <br /><br />
+        Admins can generate the rota manually for any team and week, or let the system run automatically every Friday at 08:00, immediately emailing the assigned engineers. Employees have a self-service portal to view their schedule, apply for leave, request shift swaps, and receive in-app and email notifications.
+        <br /><br />
+        IBM's ICA (Intelligent Curation Assistant) is embedded on every page via a floating button. During a P1/P2 incident, the on-call engineer clicks it, pastes the error or logs into the ICA chat, and receives AI-powered resolution guidance instantly — without switching tools. The MS-COTS team agent is live; remaining teams will plug in their ICA URLs with no code changes required.
+      </div>
+    </div>
+
+    
+    <div class="field">
+      <div class="field-q">Field 4 of 5 (continued)</div>
+      <div class="field-label">Technical statement *  <span style="font-weight:400;color:#9ca3af;font-size:.82rem">500 words or less — copy the text below</span></div>
+      <div class="answer">
+        The application targets <strong>.NET 10</strong> using <strong>ASP.NET Core MVC</strong> with <strong>Entity Framework Core 10</strong> against SQL Server. The architecture follows a repository + service layer pattern:
+        <br /><br />
+        <strong>IRepository&lt;T&gt; / GenericRepository&lt;T&gt;</strong> — async CRUD abstraction over every EF DbSet.
+        <br />
+        <strong>RotaService</strong> — rotation assignment: queries the RotationQueue by position, builds a skip list of employees on approved leave or regional holiday (cross-referencing HolidayCalendar.Location vs Employee.Region), assigns Primary and Backup, persists to OnCallSchedule, and fires in-app + email notifications.
+        <br />
+        <strong>WeeklyRotaBackgroundService</strong> — IHostedService that sleeps until the next configured day/time (default: Friday 08:00), then calls RotaService for every active team, generating next week's (Monday–Sunday) rota automatically.
+        <br />
+        <strong>AuthService</strong> — BCrypt.Net-Next (work factor 12) with plain-text fallback for seed data; passwords are hashed on every create/edit.
+        <br />
+        <strong>NotificationService</strong> — saves an Unread row to the Notifications table and dispatches a branded HTML email via MailKit/MimeKit (Gmail SMTP, STARTTLS port 587).
+        <br /><br />
+        The database schema has 10 tables: Roles, Teams, Employees, Applications, HolidayCalendar, LeaveRequests, OnCallSchedule, RotationQueue, ShiftSwapRequests, and Notifications. FK constraints and delete behaviours are configured via EF Fluent API. Authentication is session-based (8-hour timeout, HttpOnly cookie). The abstract BaseController provides RequireLogin() and RequireAdmin() guards across all 14 controllers. The UI uses Bootstrap 5.3, Bootstrap Icons 1.11, and DataTables 1.13 across 35+ Razor views.
+        <br /><br />
+        IBM Bob was used throughout: generating entity models, RotaService skip logic, the background scheduler, NotificationService email templates, the full SQL seed script (MERGE-based idempotent inserts), all 14 controller scaffolds, and the 3-minute demo artefact.
+      </div>
+    </div>
+
+    
+    <div class="field">
+      <div class="field-q">Field 5 of 5</div>
+      <div class="field-label">Solution impact(s) *  <span style="font-weight:400;color:#9ca3af;font-size:.82rem">This solution will (select all that apply):</span></div>
+
+      <div class="impacts">
+
+        <div class="impact on">
+          <div class="chk yes">✓</div>
+          <div class="impact-body">
+            <strong>Save time</strong>
+            <span>Automated weekly rota generation every Friday eliminates ~6 hours/month of manual spreadsheet effort. The background service runs with zero admin intervention — schedule published and emails sent automatically.</span>
+          </div>
+        </div>
+
+        <div class="impact on">
+          <div class="chk yes">✓</div>
+          <div class="impact-body">
+            <strong>Reduce errors / improve accuracy</strong>
+            <span>Leave-aware and region-aware logic prevents incorrect scheduling. Engineers are no longer assigned during their regional public holidays (Ugadi, Durga Puja, Bonalu, etc.). The system cross-references HolidayCalendar.Location against Employee.Region automatically.</span>
+          </div>
+        </div>
+
+        <div class="impact on">
+          <div class="chk yes">✓</div>
+          <div class="impact-body">
+            <strong>Improve employee / team experience</strong>
+            <span>Employees have a self-service portal to view schedules, apply for leave, submit shift swaps, and receive in-app + email notifications. Engineers know their on-call weeks every Friday — no last-minute surprises.</span>
+          </div>
+        </div>
+
+        <div class="impact on">
+          <div class="chk yes">✓</div>
+          <div class="impact-body">
+            <strong>Accelerate incident response</strong>
+            <span>IBM ICA is embedded on every page via a floating robot button. During P1/P2 incidents, the on-call engineer gets AI-powered resolution guidance instantly without switching tools. MS-COTS agent is live; 4 additional team agents being onboarded.</span>
+          </div>
+        </div>
+
+        <div class="impact">
+          <div class="chk no">—</div>
+          <div class="impact-body">
+            <strong style="color:#9ca3af">Reduce cost</strong>
+            <span style="color:#9ca3af">Not the primary driver — focus is operational efficiency and team experience.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">Made with IBM Bob</div>
+</div>
+</body>
+</html>

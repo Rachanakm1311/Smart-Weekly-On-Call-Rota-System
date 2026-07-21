@@ -1,0 +1,161 @@
+﻿@model OncallRota.ViewModels.ShiftSwapViewModel
+@{ Layout="_EmployeeLayout"; ViewData["Title"]="Shift Swap"; }
+
+<div class="page-header">
+  <h1 class="page-title"><i class="bi bi-arrow-left-right me-2 text-primary"></i>Shift Swap</h1>
+  <p class="page-subtitle">Request to swap your on-call shift with a colleague</p>
+</div>
+
+<div class="page-body">
+  <div class="row g-3">
+
+    <!-- Current Schedule card -->
+    <div class="col-lg-5">
+      <div class="card mb-3">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-calendar-check me-2 text-primary"></i>My Current Schedule
+        </div>
+        <div class="card-body">
+          @if(Model.MySchedule == null){
+            <div class="text-center py-4 text-muted">
+              <i class="bi bi-calendar3 fs-1 d-block mb-2 opacity-25"></i>
+              <p class="mb-0">You have no active on-call schedule this week.</p>
+            </div>
+          } else {
+            <dl class="row mb-3">
+              <dt class="col-5 text-muted small">Team</dt>
+              <dd class="col-7 fw-semibold">@Model.MySchedule.Team?.TeamName</dd>
+              <dt class="col-5 text-muted small">Week</dt>
+              <dd class="col-7">@Model.MySchedule.WeekStartDate?.ToString("dd MMM") – @Model.MySchedule.WeekEndDate?.ToString("dd MMM yyyy")</dd>
+              <dt class="col-5 text-muted small">Status</dt>
+              <dd class="col-7"><span class="badge-status badge-@Model.MySchedule.Status.ToLower()">@Model.MySchedule.Status</span></dd>
+            </dl>
+
+            @if(!Model.TeamColleagues.Any()){
+              <div class="alert alert-warning small py-2 mb-0">
+                <i class="bi bi-exclamation-triangle me-1"></i>No colleagues available in your team to swap with.
+              </div>
+            } else {
+              <button type="button" class="btn btn-primary w-100"
+                      data-bs-toggle="modal" data-bs-target="#swapModal">
+                <i class="bi bi-arrow-left-right me-2"></i>Request Shift Swap
+              </button>
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- My swap history -->
+    <div class="col-lg-7">
+      <div class="card">
+        <div class="card-header fw-semibold">
+          <i class="bi bi-clock-history me-2 text-primary"></i>My Swap Requests
+        </div>
+        <div class="card-body p-0">
+          @if(!Model.MyRequests.Any()){
+            <div class="text-center py-5 text-muted">
+              <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+              <p class="mb-0">No swap requests submitted yet.</p>
+            </div>
+          } else {
+            <div class="table-responsive">
+              <table class="table table-hover datatable mb-0 align-middle">
+                <thead class="table-light">
+                  <tr><th>#</th><th>Swap With</th><th>Week</th><th>Reason</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  @{ int i=1; }
+                  @foreach(var r in Model.MyRequests){
+                    <tr>
+                      <td class="text-muted">@(i++)</td>
+                      <td class="fw-semibold">@r.SwapWithEmployee?.EmployeeName</td>
+                      <td class="small text-muted">@r.Schedule?.WeekStartDate?.ToString("dd MMM yyyy")</td>
+                      <td class="small text-muted">@(r.Reason?.Length>35 ? r.Reason[..35]+"…" : r.Reason ?? "—")</td>
+                      <td>
+                        <span class="badge-status badge-@r.Status.ToLower()">@r.Status</span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Shift Swap Request Modal ───────────────────────────────────────── -->
+@if(Model.MySchedule != null && Model.TeamColleagues.Any()){
+<div class="modal fade" id="swapModal" tabindex="-1" aria-labelledby="swapModalLabel" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form asp-action="Submit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="scheduleId" value="@Model.MySchedule.ScheduleId"/>
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="swapModalLabel">
+            <i class="bi bi-arrow-left-right me-2 text-primary"></i>Request Shift Swap
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <!-- Schedule summary -->
+          <div class="alert alert-light border mb-4 py-2">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-calendar2-week text-primary fs-5"></i>
+              <div>
+                <div class="fw-semibold small">@Model.MySchedule.Team?.TeamName</div>
+                <div class="text-muted small">
+                  @Model.MySchedule.WeekStartDate?.ToString("dd MMM") – @Model.MySchedule.WeekEndDate?.ToString("dd MMM yyyy")
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Swap With -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">
+              <i class="bi bi-person-fill-gear me-1 text-primary"></i>Swap With <span class="text-danger">*</span>
+            </label>
+            <select name="swapWithEmployeeId" class="form-select" required>
+              <option value="">— Select a colleague —</option>
+              @foreach(var e in Model.TeamColleagues){
+                <option value="@e.EmployeeId">@e.EmployeeName</option>
+              }
+            </select>
+            <div class="form-text text-muted">Only active colleagues in your team are shown.</div>
+          </div>
+
+          <!-- Reason -->
+          <div class="mb-2">
+            <label class="form-label fw-semibold">
+              <i class="bi bi-chat-left-text me-1 text-primary"></i>Reason <span class="text-danger">*</span>
+            </label>
+            <textarea name="reason" class="form-control" rows="3"
+                      placeholder="e.g. Family function, Medical appointment, Travel..."
+                      required maxlength="250"></textarea>
+            <div class="form-text text-muted">Max 250 characters.</div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i>Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-send-fill me-1"></i>Submit Request
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+}
